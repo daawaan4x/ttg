@@ -1,11 +1,9 @@
-import io
 from typing import Literal
 
 import click
 
-from rich import inspect, print
+from rich import print
 from rich.console import Console
-from rich.panel import Panel
 
 from ttg.core.lexer import tokenize
 from ttg.core.parser import Parser
@@ -13,9 +11,11 @@ from ttg.core.evaluator import evaluate
 from ttg.formatter import format
 
 
-@click.command('tgg')
-@click.argument('formula', required=True)
-@click.option('--debug', type=click.Choice(['token', 'tree'], False), help="Display debug data")
+@click.command("tgg")
+@click.argument("formula", required=True)
+@click.option(
+    "--debug", type=click.Choice(["token", "tree"], False), help="Display debug data"
+)
 def command(formula: str, debug: Literal["token", "tree"]):
     if debug:
         print({"input_length": len(formula)})

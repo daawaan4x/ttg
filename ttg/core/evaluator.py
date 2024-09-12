@@ -7,7 +7,7 @@ TruthTable = Dict[str, List[bool]]
 
 def evaluate(tree: Expr) -> TruthTable:
     return {
-        'P': [True, True, False, False],
-        'Q': [True, False, True, False],
-        'P & Q': [True, False, False, False]
+        "P": [True, True, False, False],
+        "Q": [True, False, True, False],
+        "P & Q": [True, False, False, False],
     }

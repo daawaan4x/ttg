@@ -35,39 +35,39 @@ class BinaryExpr(Expr):
 
 
 class Parser:
-    '''
+    """
     A Recursive-Descent Parser implementation for propositional logic formulas.
     The grammar is defined in the individual parsing functions of this class in
     a pseudo-BNF notation.
-    '''
+    """
 
     # region Expressions
 
     def expr_primary(self):
-        '''
+        """
         expr_primary =
             \| variable
             \| ( expr )
-        '''
-        if self.match(['left_paren']):
+        """
+        if self.match(["left_paren"]):
             expr = self.expr()
-            if not self.check('right_paren'):
+            if not self.check("right_paren"):
                 self.error(self.peek(), "Expected ')'")
             self.next()
             return expr
 
-        if self.match(['variable']):
+        if self.match(["variable"]):
             return VariableExpr(self.prev())
 
         self.error(self.peek(), "Expected expression")
 
     def expr_not(self):
-        '''
+        """
         expr_not =
             \| expr_primary
             \| NOT expr_not
-        '''
-        if self.match(['not']):
+        """
+        if self.match(["not"]):
             operator = self.prev()
             right = self.expr_not()
             return UnaryExpr(operator, right)
@@ -75,14 +75,14 @@ class Parser:
         return self.expr_primary()
 
     def expr_and(self):
-        '''
+        """
         expr_and =
             \| expr_not
             \| expr_and AND expr_not
-        '''
+        """
         expr = self.expr_not()
 
-        while self.match(['and']):
+        while self.match(["and"]):
             operator = self.prev()
             right = self.expr_not()
             expr = BinaryExpr(expr, operator, right)
@@ -90,14 +90,14 @@ class Parser:
         return expr
 
     def expr_or(self):
-        '''
+        """
         expr_or =
             \| expr_and
             \| expr_or OR expr_and
-        '''
+        """
         expr = self.expr_and()
 
-        while self.match(['or']):
+        while self.match(["or"]):
             operator = self.prev()
             right = self.expr_and()
             expr = BinaryExpr(expr, operator, right)
@@ -105,14 +105,14 @@ class Parser:
         return expr
 
     def expr_then(self):
-        '''
+        """
         expr_then =
             \| expr_or
             \| expr_then THEN expr_or
-        '''
+        """
         expr = self.expr_or()
 
-        while self.match(['then']):
+        while self.match(["then"]):
             operator = self.prev()
             right = self.expr_or()
             expr = BinaryExpr(expr, operator, right)
@@ -120,9 +120,9 @@ class Parser:
         return expr
 
     def expr(self):
-        '''
+        """
         expr = expr_then
-        '''
+        """
         return self.expr_then()
 
     # endregion

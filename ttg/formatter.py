@@ -4,28 +4,28 @@ from ttg.core.evaluator import TruthTable
 
 
 def format_bool(value: bool) -> Text:
-    'Formats boolean value for console display'
+    "Formats boolean value for console display"
 
     text = Text(str(value))
-    text.stylize('italic')
+    text.stylize("italic")
 
-    if (value):
-        text.stylize('green')
+    if value:
+        text.stylize("green")
     else:
-        text.stylize('red')
+        text.stylize("red")
 
     return text
 
 
 def format(values: TruthTable) -> Table:
-    'Formats the truth-table for console display'
+    "Formats the truth-table for console display"
 
-    table = Table(title='Truth Table')
+    table = Table(title="Truth Table")
 
     # Add formulas of the truth table as columns
     columns = list(values.keys())
     for column in columns:
-        table.add_column(column, justify='center')
+        table.add_column(column, justify="center")
 
     # Gather the values of the formulas for each row/index
     row_count = len(values[columns[0]])
