@@ -1,38 +1,25 @@
-from typing import Literal
+from pathlib import Path
+
+from ttg.compile import compile
 
 import click
 
-from rich import print
-from rich.console import Console
-
-from ttg.core.lexer import tokenize
-from ttg.core.parser import Parser
-from ttg.core.evaluator import evaluate
-from ttg.formatter import format
-
 
 @click.command("tgg")
-@click.argument("formula", required=True)
-@click.option(
-    "--debug", type=click.Choice(["token", "tree"], False), help="Display debug data"
-)
-def command(formula: str, debug: Literal["token", "tree"]):
-    if debug:
-        print({"input_length": len(formula)})
+@click.argument("input", required=True)
+@click.option("-f", "--file", is_flag=True, help="Treats the input as a filepath.")
+@click.option("-i", "--inspect", is_flag=True, help="Display debug data.")
+def command(input: str, file: bool = False, inspect: bool = False):
+    # Test if "formula" is actually a filepath
+    if file:
+        filepath = Path(input)
+        if not filepath.exists():
+            raise Exception("The specified filepath does not exist")
+        if not filepath.is_file() or not filepath.name.endswith(".txt"):
+            raise Exception("The provided input file is not a .txt file")
+        formulas = filepath.read_text().splitlines()
+    else:
+        formulas = [input]
 
-    tokens = tokenize(formula)
-    if debug == "token":
-        print({"token_count": len(tokens)})
-        return print(tokens)
-
-    tree = Parser().parse(tokens)
-    if debug == "tree":
-        print({"expression": str(tree)})
-        return print(tree)
-
-    truth_table = evaluate(tree)
-
-    rich_table = format(truth_table)
-    rich_console = Console()
-    rich_console.print()
-    rich_console.print(rich_table)
+    for formula in formulas:
+        compile(formula, inspect)

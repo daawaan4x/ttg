@@ -17,10 +17,10 @@ def format_bool(value: bool) -> Text:
     return text
 
 
-def format(values: TruthTable) -> Table:
+def format(values: TruthTable, title="Truth Table") -> Table:
     "Formats the truth-table for console display"
 
-    table = Table(title="Truth Table")
+    table = Table(title=title)
 
     # Add formulas of the truth table as columns
     columns = list(values.keys())

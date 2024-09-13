@@ -11,8 +11,7 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 	- `THEN`, `then`, `>`, `->`
 - **Complex Formulas**: Input nested formulas using parenthesis `(...)` 
 - **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
-- **IO using CLI or File**: Choose either the CLI or a file input & output.
-- **Different Output Formats**: CSV, JSON, or a Pretty Text.
+- **Input using CLI or File**: Choose either the CLI or a file for input.
 
 ## Usage
 
@@ -24,9 +23,9 @@ If you want to use the compiled binaries, simply run the executable file for you
 cd <this-project-folder>/bin
 
 ./ttg "P & Q" 
-./ttg "P & Q" --debug=token # Logs tokenized form of input
-./ttg input.txt
-./ttg input.txt --debug=tree # Logs expression tree of input
+./ttg "P & Q" --inspect
+./ttg input.txt --file
+./ttg input.txt --file --inspect
 ```
 
 ---
@@ -39,9 +38,9 @@ cd <this-project-folder>
 python ttg 
 
 python ttg "P & Q" 
-python ttg "P & Q" --debug=token # Logs tokenized form of input
-python ttg input.txt
-python ttg input.txt --debug=tree # Logs expression tree of input
+python ttg "P & Q" --inspect
+python ttg input.txt --file
+python ttg input.txt --file --inspect
 ```
 
 ## Running from Source
