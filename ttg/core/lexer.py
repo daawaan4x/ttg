@@ -8,7 +8,7 @@ right_paren_regex = r"(?P<right_paren>\))"
 not_regex = r"(?P<not>\bNOT\b|!|~)"
 "Regex for NOT operators: `NOT`, `not`, `!`, `~`"
 
-and_regex = r"(?P<and>\bAND\b|&|^)"
+and_regex = r"(?P<and>\bAND\b|&|\^)"
 "Regex for AND operators: `AND`, `and`, `&`, `^`"
 
 or_regex = r"(?P<or>\bOR\b|\||v)"
