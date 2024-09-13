@@ -67,6 +67,7 @@ def tokenize(formula: str) -> List[Token]:
     # filter empty matches
     matches = filter(lambda match: match.group(), query)
 
+    # map regex matches to tokens
     tokens = map(
         lambda match: Token(
             type=match.lastgroup, value=match.group(), span=match.span()

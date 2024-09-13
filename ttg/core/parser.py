@@ -4,6 +4,11 @@ from ttg.core.lexer import Token, TokenType
 
 
 class Expr:
+    """
+    The Expression class represents the individual nodes of the Abstract Syntax
+    Tree (AST), the final output of the parser.
+    """
+
     pass
 
 
@@ -130,9 +135,11 @@ class Parser:
     # region Helpers
 
     def error(self, token: Token, message: str):
+        "Helper method for raising exceptions"
         raise Exception(message, token)
 
     def match(self, types: List[TokenType]) -> bool:
+        "Moves to the next token if current token matches any of specified token types"
         for type in types:
             if self.check(type):
                 self.next()
@@ -140,27 +147,33 @@ class Parser:
         return False
 
     def check(self, type: TokenType) -> bool:
+        "Check if current token matches specified token type"
         if self.isdone():
             return False
         return self.peek().type == type
 
     def peek(self) -> Token:
+        "Peeks at current token"
         return self.tokens[self.current_index]
 
     def prev(self) -> Token:
+        "Peeks at previous token"
         return self.tokens[self.current_index - 1]
 
     def next(self) -> Token:
+        "Moves to the next token unless its done"
         if not self.isdone():
             self.current_index += 1
         return self.prev()
 
     def isdone(self) -> bool:
+        "Checks if parser is already past last token"
         return self.current_index == len(self.tokens)
 
     # endregion
 
     def parse(self, tokens: List[Token]):
+        "Parses a list of tokens to construct an AST then returns the root node"
         self.tokens = list(tokens)
         self.current_index = 0
 
@@ -168,3 +181,8 @@ class Parser:
 
     tokens: List[Token]
     current_index: int = 0
+
+
+def parse(tokens: List[Token]):
+    # wrapper function for convenience
+    return Parser().parse(tokens)

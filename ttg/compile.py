@@ -1,7 +1,7 @@
 from rich.console import Console
 
 from ttg.core.lexer import tokenize
-from ttg.core.parser import Parser
+from ttg.core.parser import parse
 from ttg.core.evaluator import evaluate
 from ttg.formatter import format
 
@@ -21,13 +21,13 @@ def compile(formula: str, inspect: bool):
         rich_console.print({"token_count": len(tokens)})
         rich_console.print(tokens)
 
-    tree = Parser().parse(tokens)
+    tree = parse(tokens)
     if inspect:
         rich_console.print()
         rich_console.print({"expression": str(tree)})
         rich_console.print(tree)
 
-    truth_table = evaluate(tree)
+    truth_table = evaluate(tokens, tree)
 
     rich_table = format(truth_table, title=formula)
     rich_console.print()
