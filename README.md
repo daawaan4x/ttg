@@ -2,6 +2,10 @@
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
+<div align="center">
+	<img src="./imgs/p_and_q.png" alt="Truth Table Generator">
+</div>
+
 ## Features
 
 - **Supported Logical Operators**: In order of precedence 
@@ -42,6 +46,10 @@ python ttg "P & Q" --inspect
 python ttg input.txt --file
 python ttg input.txt --file --inspect
 ```
+
+---
+
+For more usage info, you can run `ttg --help`.
 
 ## Running from Source
 
