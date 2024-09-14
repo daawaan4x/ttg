@@ -3,7 +3,7 @@
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
 <div align="center">
-	<img src="./imgs/p_and_q.png" alt="Truth Table Generator">
+	<img width="640" src="./imgs/p_and_q.png" alt="Truth Table Generator">
 </div>
 
 ## Features
@@ -57,18 +57,23 @@ For more usage info, you can run `ttg --help`.
 
 Alternatively, you can install python packages from https://www.python.org/downloads/.
 
-After setting up your python installation, install the project's dependencies with the following:
+**Recommended**: After setting up your python installation, install the project's dependencies with the following commands. Visit `venv` docs from https://docs.python.org/3/library/venv.html for more information:
 
 ```sh
 cd <this-project-folder>
 
-# Unix
-python3 -m venv .venv
-source .venv/bin/activate
+python -m venv .venv
 
-# Windows
-py -m venv .venv
-.venv/Scripts/activate
+# --- UNIX ---
+source .venv/bin/activate # bash/zsh
+.venv/Scripts/Activate.ps1 # Powershell
+
+# --- Windows ---
+source .venv/bin/Scripts/activate # bash/zsh
+.venv\Scripts\activate.bat # Command Prompt
+.venv\Scripts\Activate.ps1 # Powershell
+
+
 
 pip install -r requirements.txt
 ```

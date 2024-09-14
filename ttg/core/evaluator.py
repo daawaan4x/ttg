@@ -20,19 +20,21 @@ truth values for all the variables.
 
 def truth_table_variables(variables: List[str]):
     """
-    Generates all the possible set of truth values for all the given variables.
-    For convenience, instead of returning `TruthTable`, it returns `TruthValues`
-    which can be used directly in the Evaluator.
+    Generates all the possible set of truth values (cartesian product) for all
+    the given variables.
+
+    For convenience, instead of returning `TruthTable`, it returns a list of
+    `TruthValues` which can be used directly in the Evaluator.
     """
     products: List[TruthValues] = list()
 
-    # Iterate all numbers from 0 to 2^n - 1 in their binary representation then
-    # use the individual bits as the True & False values.
+    # Iterate all numbers from 0 to 2^n - 1 then use the individual bits in their
+    # binary representation as the True & False values.
     count = len(variables)
-    for i in range(2**count):
+    for binary in range(2**count):
         # The "not" below is solely for display purposes to generate the `True`
         # values first so that they appear first at the top in the table
-        row = [not bool((i >> bit) & 1) for bit in range(count)]
+        row = [not bool((binary >> bit) & 1) for bit in range(count)]
         product = dict(zip(variables, row))
         products.append(product)
 
@@ -41,8 +43,9 @@ def truth_table_variables(variables: List[str]):
 
 class Evaluator:
     """
-    A recursive interpreter implementation that simplifies traversing the AST
-    and calculating the individual result of each node at every level.
+    A recursive interpreter implementation for traversing the
+    Abstract Syntax Tree (AST) of a propositional logic formula and
+    calculating the individual result of each node at every level.
     """
 
     values: TruthValues
@@ -76,13 +79,22 @@ class Evaluator:
         self.values[str(expr)] = value  # save result for each expression
         return value
 
-    def evaluate(self, expr: Expr, values: TruthValues) -> TruthValues:
+    def evaluate(self, tree: Expr, values: TruthValues) -> TruthValues:
+        """
+        Given the root node of an expression tree and the truth values for all
+        the variables in the expression tree, it returns an extended set of
+        truth values including the results of the sub-expressions of the
+        propositional logic formula
+        """
+
         self.values = dict(values)
-        self.eval(expr)
+        self.eval(tree)
         return dict(self.values)
 
 
 def evaluate(tokens: List[Token], tree: Expr) -> TruthTable:
+    # wrapper function for convenience
+
     # filter & get variable names from list of tokens
     variables = list(
         map(lambda x: x.value, filter(lambda x: x.type == "variable", tokens))

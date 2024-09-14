@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
 from ttg.core.lexer import Token, TokenType
 
 
@@ -48,11 +48,11 @@ class Parser:
 
     # region Expressions
 
-    def expr_primary(self):
+    def expr_primary(self) -> Union[Expr, VariableExpr]:
         """
         expr_primary =
-            \| variable
             \| ( expr )
+            \| variable
         """
         if self.match(["left_paren"]):
             expr = self.expr()
@@ -69,8 +69,8 @@ class Parser:
     def expr_not(self):
         """
         expr_not =
-            \| expr_primary
             \| NOT expr_not
+            \| expr_primary
         """
         if self.match(["not"]):
             operator = self.prev()
@@ -82,8 +82,8 @@ class Parser:
     def expr_and(self):
         """
         expr_and =
+            \| expr_not AND expr_and
             \| expr_not
-            \| expr_and AND expr_not
         """
         expr = self.expr_not()
 
@@ -97,8 +97,8 @@ class Parser:
     def expr_or(self):
         """
         expr_or =
+            \| expr_and OR expr_or
             \| expr_and
-            \| expr_or OR expr_and
         """
         expr = self.expr_and()
 
@@ -112,8 +112,8 @@ class Parser:
     def expr_then(self):
         """
         expr_then =
+            \| expr_or THEN expr_then
             \| expr_or
-            \| expr_then THEN expr_or
         """
         expr = self.expr_or()
 
@@ -172,7 +172,7 @@ class Parser:
 
     # endregion
 
-    def parse(self, tokens: List[Token]):
+    def parse(self, tokens: List[Token]) -> Expr:
         "Parses a list of tokens to construct an AST then returns the root node"
         self.tokens = list(tokens)
         self.current_index = 0
@@ -183,6 +183,6 @@ class Parser:
     current_index: int = 0
 
 
-def parse(tokens: List[Token]):
+def parse(tokens: List[Token]) -> Expr:
     # wrapper function for convenience
     return Parser().parse(tokens)
