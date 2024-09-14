@@ -43,7 +43,7 @@ TokenType = Literal[
 
 @dataclass
 class Token:
-    "Output data of the lexer after tokenization"
+    "Output data of the lexer after tokenizing the propositional logic formula"
 
     type: TokenType
     "The classification of the value of the token"
