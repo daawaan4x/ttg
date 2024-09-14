@@ -5,17 +5,17 @@ import re
 left_paren_regex = r"(?P<left_paren>\()"
 right_paren_regex = r"(?P<right_paren>\))"
 
-not_regex = r"(?P<not>\bNOT\b|!|~)"
-"Regex for NOT operators: `NOT`, `not`, `!`, `~`"
+not_regex = r"(?P<not>\bNOT\b|!|~|¬)"
+"Regex for NOT operators: `NOT`, `not`, `!`, `~`, `¬`"
 
-and_regex = r"(?P<and>\bAND\b|&|\^)"
-"Regex for AND operators: `AND`, `and`, `&`, `^`"
+and_regex = r"(?P<and>\bAND\b|&&|&|\^|∧)"
+"Regex for AND operators: `AND`, `and`, `&`, `&&`, `^`, `∧`"
 
-or_regex = r"(?P<or>\bOR\b|\||v)"
-"Regex for OR operators: `OR`, `or`, `|`, `v`"
+or_regex = r"(?P<or>\bOR\b|\|\||\||v|∨)"
+"Regex for OR operators: `OR`, `or`, `|`, `||`, `v`, `∨`"
 
-then_regex = r"(?P<then>\bTHEN\b|>|->)"
-"Regex for THEN operators: `THEN`, `then`, `>`, `->`"
+then_regex = r"(?P<then>\bTHEN\b|>|->|→)"
+"Regex for THEN operators: `THEN`, `then`, `>`, `->`, `→`"
 
 variable_regex = r"(?P<variable>\b[A-Z]+\b)"
 "Regex for variables - any combination of alphabet characters"

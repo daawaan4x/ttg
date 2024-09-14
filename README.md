@@ -9,10 +9,10 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 ## Features
 
 - **Supported Logical Operators**: In order of precedence 
-	- `NOT`, `not`, `!`, `~`
-	- `AND`, `and`, `&`, `^`
-	- `OR`, `or`, `|`, `v`
-	- `THEN`, `then`, `>`, `->`
+	- `NOT`, `not`, `!`, `~`, `¬`
+	- `AND`, `and`, `&`, `&&`, `^`, `∧`
+	- `OR`, `or`, `|`, `||`, `v`, `∨`,
+	- `THEN`, `then`, `>`, `->`, `→`,
 - **Complex Formulas**: Input nested formulas using parenthesis `(...)` 
 - **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
 - **Input using CLI or File**: Choose either the CLI or a file for input.
