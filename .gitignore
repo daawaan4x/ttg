@@ -1,5 +1,5 @@
 .venv
 __pycache__
-bin
+bin/*/
 *.txt
 !requirements.txt
