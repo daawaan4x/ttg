@@ -3,7 +3,7 @@
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
 <div align="center">
-	<img src="./imgs/p_and_q.png" alt="Truth Table Generator">
+	<img width="898" src="./imgs/p_and_q.png" alt="Truth Table Generator">
 </div>
 
 ## Features
