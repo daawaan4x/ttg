@@ -26,7 +26,7 @@ class UnaryExpr(Expr):
     right: Expr
 
     def __str__(self) -> str:
-        return f"{self.operator}{self.right}"
+        return f"{self.operator}({self.right})"
 
 
 @dataclass
@@ -37,6 +37,12 @@ class BinaryExpr(Expr):
 
     def __str__(self) -> str:
         return f"({self.left} {self.operator} {self.right})"
+
+
+@dataclass
+class ParserException(Exception):
+    message: str
+    token: Token
 
 
 class Parser:
@@ -63,8 +69,8 @@ class Parser:
 
         if self.match(["variable"]):
             return VariableExpr(self.prev())
-
-        self.error(self.peek(), "Expected expression")
+        else:
+            self.error(self.peek(), "Expected variable")
 
     def expr_not(self):
         """
@@ -136,7 +142,7 @@ class Parser:
 
     def error(self, token: Token, message: str):
         "Helper method for raising exceptions"
-        raise Exception(message, token)
+        raise ParserException(message, token)
 
     def match(self, types: List[TokenType]) -> bool:
         "Moves to the next token if current token matches any of specified token types"
@@ -153,7 +159,9 @@ class Parser:
         return self.peek().type == type
 
     def peek(self) -> Token:
-        "Peeks at current token"
+        "Peeks at current token. Returns previous if done."
+        if self.isdone():
+            return self.prev()
         return self.tokens[self.current_index]
 
     def prev(self) -> Token:
@@ -177,7 +185,11 @@ class Parser:
         self.tokens = list(tokens)
         self.current_index = 0
 
-        return self.expr()
+        tree = self.expr()
+        if not self.isdone():
+            self.error(self.peek(), "Expected end of formula")
+
+        return tree
 
     tokens: List[Token]
     current_index: int = 0
