@@ -3,16 +3,13 @@ from typing import List
 
 from rich.pretty import Pretty
 from rich.text import Text
-from rich.console import Console
 from rich.highlighter import Highlighter
 
 from ttg.core.lexer import Token, tokenize
 from ttg.core.parser import ParserException, parse
 from ttg.core.evaluator import evaluate
 from ttg.formatter import format
-
-rich_console = Console()
-rich_console_error = Console(stderr=True)
+from ttg.console import rich_console, rich_console_error
 
 
 def compile(formula: str, inspect: bool):
@@ -57,7 +54,7 @@ def compile(formula: str, inspect: bool):
         if inspect:
             rich_console_error.print_exception(show_locals=True)
         else:
-            rich_console_error.print("Exception caught: ", end="")
+            rich_console_error.print("Exception caught: ", style="bold red", end="")
             rich_console_error.print(Pretty(exc))
 
 
