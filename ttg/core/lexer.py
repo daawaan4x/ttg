@@ -59,7 +59,13 @@ class Token:
 
 
 def tokenize(formula: str) -> List[Token]:
-    "Turns the input formula into a sequence of tokens"
+    """
+    Turns the input formula into a sequence of tokens.
+
+    The tokenize function is resilient and will not raise errors for invalid tokens
+    but will instead create a `Token(type="invalid")` added in the list.
+    """
+    formula += " "
 
     # iterate for regex matches on input
     query = re.finditer(combined_regex, formula, re.IGNORECASE)
