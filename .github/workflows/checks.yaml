@@ -1,0 +1,19 @@
+name: Check
+on: [push, pull_request]
+
+jobs:
+  ruff-check:
+    name: Ruff Checker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/setup
+      - run: ruff check
+
+  ruff-format:
+    name: Ruff Formatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/setup
+      - run: ruff format
