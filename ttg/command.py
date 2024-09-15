@@ -1,17 +1,17 @@
+import sys
 from pathlib import Path
 
-from ttg.console import rich_console
-from ttg.compile import compile
-
-
 import click
+
+from ttg.console import rich_console
+from ttg.program import program
 
 
 @click.command("tgg")
 @click.argument("input", required=True)
 @click.option("-f", "--file", is_flag=True, help="Treats the input as a filepath.")
 @click.option("-i", "--inspect", is_flag=True, help="Display debug data.")
-def command(input: str, file: bool = False, inspect: bool = False):
+def command(input: str, file: bool = False, inspect: bool = False) -> None:
     # Test if "formula" is actually a filepath
     if file:
         filepath = Path(input)
@@ -25,11 +25,11 @@ def command(input: str, file: bool = False, inspect: bool = False):
             rich_console.print()
             rich_console.print(f"{exc.__class__.__name__}: ", style="bold red", end="")
             rich_console.print(exc)
-            exit(-1)
+            sys.exit(-1)
 
         formulas = filepath.read_text().splitlines()
     else:
         formulas = [input]
 
     for formula in formulas:
-        compile(formula, inspect)
+        program(formula, inspect)

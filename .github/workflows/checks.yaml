@@ -1,0 +1,33 @@
+name: Check
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  ruff-check:
+    name: Ruff Checker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/setup
+      - run: ruff check
+
+  ruff-format:
+    name: Ruff Formatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/setup
+      - run: ruff format
+
+  pyright:
+    name: Pyright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/setup
+      - uses: jakebailey/pyright-action@v2
+        with:
+          pylance-version: latest-release

@@ -1,82 +1,83 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List, Union
-from ttg.core.lexer import Token, TokenType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ttg.core.lexer import Token, TokenType
 
 
 class Expr:
-    """
-    The Expression class represents the individual nodes of the Abstract Syntax
-    Tree (AST), the final output of the parser.
-    """
-
-    pass
+    """Represents the individual nodes of the Abstract Syntax Tree (AST)."""
 
 
 @dataclass
-class VariableExpr(Expr):
+class VariableExpr(Expr):  # noqa: D101
     name: Token
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return str(self.name)
 
 
 @dataclass
-class UnaryExpr(Expr):
+class UnaryExpr(Expr):  # noqa: D101
     operator: Token
     right: Expr
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return f"{self.operator}({self.right})"
 
 
 @dataclass
-class BinaryExpr(Expr):
+class BinaryExpr(Expr):  # noqa: D101
     left: Expr
     operator: Token
     right: Expr
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return f"({self.left} {self.operator} {self.right})"
 
 
 @dataclass
-class ParserException(Exception):
+class ParserError(Exception):  # noqa: D101
     message: str
     token: Token
 
 
 class Parser:
-    """
-    A Recursive-Descent Parser implementation for propositional logic formulas.
+    """Recursive-Descent Parser implementation for propositional logic formulas.
+
     The grammar is defined in the individual parsing functions of this class in
     a pseudo-BNF notation.
     """
 
     # region Expressions
 
-    def expr_primary(self) -> Union[Expr, VariableExpr]:
-        """
+    def expr_primary(self) -> Expr | VariableExpr:
+        """Parse primary expression.
+
         expr_primary =
-            \| ( expr )
-            \| variable
+            | ( expr )
+            | variable
         """
         if self.match(["left_paren"]):
             expr = self.expr()
             if not self.check("right_paren"):
-                self.error(self.peek(), "Expected ')'")
+                raise ParserError("Expected ')'", self.peek())
             self.next()
             return expr
 
         if self.match(["variable"]):
             return VariableExpr(self.prev())
-        else:
-            self.error(self.peek(), "Expected variable")
 
-    def expr_not(self):
-        """
+        raise ParserError("Expected variable", self.peek())
+
+    def expr_not(self) -> Expr | VariableExpr | UnaryExpr:
+        """Parse a NOT expression.
+
         expr_not =
-            \| NOT expr_not
-            \| expr_primary
+            | NOT expr_not
+            | expr_primary
         """
         if self.match(["not"]):
             operator = self.prev()
@@ -85,11 +86,12 @@ class Parser:
 
         return self.expr_primary()
 
-    def expr_and(self):
-        """
+    def expr_and(self):  # noqa: ANN201
+        """Parse an AND expression.
+
         expr_and =
-            \| expr_not AND expr_and
-            \| expr_not
+            | expr_not AND expr_and
+            | expr_not
         """
         expr = self.expr_not()
 
@@ -100,11 +102,12 @@ class Parser:
 
         return expr
 
-    def expr_or(self):
-        """
+    def expr_or(self):  # noqa: ANN201
+        """Parse an OR expression.
+
         expr_or =
-            \| expr_and OR expr_or
-            \| expr_and
+            | expr_and OR expr_or
+            | expr_and
         """
         expr = self.expr_and()
 
@@ -115,11 +118,12 @@ class Parser:
 
         return expr
 
-    def expr_then(self):
-        """
+    def expr_then(self):  # noqa: ANN201
+        """Parse a THEN expression.
+
         expr_then =
-            \| expr_or THEN expr_then
-            \| expr_or
+            | expr_or THEN expr_then
+            | expr_or
         """
         expr = self.expr_or()
 
@@ -130,9 +134,10 @@ class Parser:
 
         return expr
 
-    def expr(self):
-        """
-        expr = expr_then
+    def expr(self):  # noqa: ANN201
+        """Parse any expression.
+
+        expr = expr_then.
         """
         return self.expr_then()
 
@@ -140,61 +145,57 @@ class Parser:
 
     # region Helpers
 
-    def error(self, token: Token, message: str):
-        "Helper method for raising exceptions"
-        raise ParserException(message, token)
-
-    def match(self, types: List[TokenType]) -> bool:
-        "Moves to the next token if current token matches any of specified token types"
-        for type in types:
-            if self.check(type):
+    def match(self, types: list[TokenType]) -> bool:
+        """Move to the next if current token matches any of specified token types."""
+        for t in types:
+            if self.check(t):
                 self.next()
                 return True
         return False
 
     def check(self, type: TokenType) -> bool:
-        "Check if current token matches specified token type"
+        """Check if current token matches specified token type."""
         if self.isdone():
             return False
         return self.peek().type == type
 
     def peek(self) -> Token:
-        "Peeks at current token. Returns previous if done."
+        """Peek at current token. Returns previous if done."""
         if self.isdone():
             return self.prev()
         return self.tokens[self.current_index]
 
     def prev(self) -> Token:
-        "Peeks at previous token"
+        """Peek at previous token."""
         return self.tokens[self.current_index - 1]
 
     def next(self) -> Token:
-        "Moves to the next token unless its done"
+        """Move to the next token unless its done."""
         if not self.isdone():
             self.current_index += 1
         return self.prev()
 
     def isdone(self) -> bool:
-        "Checks if parser is already past last token"
+        """Check if parser is already past last token."""
         return self.current_index == len(self.tokens)
 
     # endregion
 
-    def parse(self, tokens: List[Token]) -> Expr:
-        "Parses a list of tokens to construct an AST then returns the root node"
+    def parse(self, tokens: list[Token]) -> Expr:
+        """Parse a list of tokens to construct an AST then returns the root node."""
         self.tokens = list(tokens)
         self.current_index = 0
 
         tree = self.expr()
         if not self.isdone():
-            self.error(self.peek(), "Expected end of formula")
+            raise ParserError("Expected end of formula", self.peek())
 
         return tree
 
-    tokens: List[Token]
+    tokens: list[Token]
     current_index: int = 0
 
 
-def parse(tokens: List[Token]) -> Expr:
+def parse(tokens: list[Token]) -> Expr:
     # wrapper function for convenience
     return Parser().parse(tokens)

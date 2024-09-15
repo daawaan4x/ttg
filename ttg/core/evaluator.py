@@ -1,11 +1,15 @@
-from typing import Dict, List
+from __future__ import annotations
 
-from ttg.core.lexer import Token
+from typing import TYPE_CHECKING, Dict, List
+
 from ttg.core.parser import BinaryExpr, Expr, UnaryExpr, VariableExpr
+
+if TYPE_CHECKING:
+    from ttg.core.lexer import Token
 
 TruthTable = Dict[str, List[bool]]
 """
-The Truth Table type stores a list of boolean values for each expression. This 
+The Truth Table type stores a list of boolean values for each expression. This
 represents the different outputs of the sub-expressions of the input formula
 under all the possible set of truth values for all the variables.
 """
@@ -18,15 +22,13 @@ truth values for all the variables.
 """
 
 
-def truth_table_variables(variables: List[str]):
-    """
-    Generates all the possible set of truth values (cartesian product) for all
-    the given variables.
+def truth_table_variables(variables: list[str]) -> list[TruthValues]:
+    """Generate all truth value combinations for all the given variables.
 
     For convenience, instead of returning `TruthTable`, it returns a list of
     `TruthValues` which can be used directly in the Evaluator.
     """
-    products: List[TruthValues] = list()
+    products: list[TruthValues] = []
 
     # Iterate all numbers from 0 to 2^n - 1 then use the individual bits in their
     # binary representation as the True & False values.
@@ -42,7 +44,8 @@ def truth_table_variables(variables: List[str]):
 
 
 class Evaluator:
-    """
+    """Interpreter for the Syntax Tree of a Formula.
+
     A recursive interpreter implementation for traversing the
     Abstract Syntax Tree (AST) of a propositional logic formula and
     calculating the individual result of each node at every level.
@@ -50,26 +53,28 @@ class Evaluator:
 
     values: TruthValues
 
-    def eval(self, expr: Expr) -> bool:
+    def eval(self, expr: Expr) -> bool:  # noqa: D102
         if isinstance(expr, VariableExpr):
             return self.eval_variable(expr)
         if isinstance(expr, UnaryExpr):
             return self.eval_unary(expr)
         if isinstance(expr, BinaryExpr):
             return self.eval_binary(expr)
+        return False
 
-    def eval_variable(self, expr: VariableExpr) -> bool:
+    def eval_variable(self, expr: VariableExpr) -> bool:  # noqa: D102
         return bool(self.values.get(expr.name.value))
 
-    def eval_unary(self, expr: UnaryExpr) -> bool:
+    def eval_unary(self, expr: UnaryExpr) -> bool:  # noqa: D102
         value = self.eval(expr.right)
         if expr.operator.type == "not":
             value = not value
         self.values[str(expr)] = value  # save result for each expression
         return value
 
-    def eval_binary(self, expr: BinaryExpr) -> bool:
+    def eval_binary(self, expr: BinaryExpr) -> bool:  # noqa: D102
         left, right = self.eval(expr.left), self.eval(expr.right)
+        value = False
         if expr.operator.type == "and":
             value = left and right
         if expr.operator.type == "or":
@@ -80,27 +85,25 @@ class Evaluator:
         return value
 
     def evaluate(self, tree: Expr, values: TruthValues) -> TruthValues:
-        """
+        """Evaluate & Store the sub-expressions of a formula.
+
         Given the root node of an expression tree and the truth values for all
         the variables in the expression tree, it returns an extended set of
         truth values including the results of the sub-expressions of the
-        propositional logic formula
+        propositional logic formula.
         """
-
         self.values = dict(values)
         self.eval(tree)
         return dict(self.values)
 
 
-def evaluate(tokens: List[Token], tree: Expr) -> TruthTable:
+def evaluate(tokens: list[Token], tree: Expr) -> TruthTable:
     # wrapper function for convenience
 
     # filter & get variable names from list of tokens
-    variables = list(
-        map(lambda x: x.value, filter(lambda x: x.type == "variable", tokens))
-    )
+    variables = [x.value for x in filter(lambda x: x.type == "variable", tokens)]
 
-    table: TruthTable = dict()
+    table: TruthTable = {}
     evaluator = Evaluator()
 
     # for each truth values combination of the variables, evaluate the
@@ -108,6 +111,6 @@ def evaluate(tokens: List[Token], tree: Expr) -> TruthTable:
     for truth_values in truth_table_variables(variables):
         values = evaluator.evaluate(tree, truth_values)
         for key, value in values.items():
-            table.setdefault(key, list()).append(value)
+            table.setdefault(key, []).append(value)
 
     return table
