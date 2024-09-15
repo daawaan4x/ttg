@@ -17,7 +17,65 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 - **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
 - **Input using CLI or File**: Choose either the CLI or a file for input.
 
-## Usage
+## Table of Contents
+
+1. [Algorithm](#algorithm) 
+   - [Psuedocode](#psuedocode)
+   - [Error Handling](#error-handling)
+3. [User Manual](#algorithm)
+   - [Running From Source](#running-from-source)
+   - [Compiling From Source](#compiling-from-source)
+
+## Algorithm
+
+This Truth-Table Generator implements an interpreter divided into three components to handle different phases, namely:
+
+1. **Lexer** for *tokenization* (converting `string` input to `List[Token]`) 
+2. **Parser** for *Expression Tree* construction (constructing `Expr` tree from `List[Token]`)
+3. **Evaluator** for the *Expression Tree* (evaluating `Expr` tree into a `List[bool]`)
+
+The **Lexer** uses *Regex* with [*name-capturing-groups*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group) to iteratively find and classify individual *matches* in the input string which are then converted into a list of *tokens*. This method allows performing the *tokenization* and *classification* phase entirely with *Regex* with minimal business logic (converting *Regex matches* to a custom `Token` class).
+
+The **Parser** is an implementation of a [*Recursive-Descent Parser*](https://en.wikipedia.org/wiki/Recursive_descent_parser) which validates the arrangement of the tokens with the expected grammar and simultaneously constructs an [*Expression Tree*](https://en.wikipedia.org/wiki/Binary_expression_tree) — wherein each *Node* represents its corresponding *token* and its related *Nodes*. It uses the following grammar described in a psuedo-format similar to [*Backus-Naur Form* (**BNF**)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form).
+
+```
+expr_primary = ( expr ) | variable
+expr_not = expr_primary | NOT expr_not
+expr_and = expr_not | expr_not AND expr_and
+expr_or = expr_and | expr_and OR expr_or
+expr_then = expr_or | expr_or THEN expr_then
+expr = expr_then
+```
+
+The **Evaluator** is simply a set of functions matched to each of the types of *Nodes* in the *Expression Tree*, namely `Variable` nodes, `Unary` nodes, and `Binary` nodes. Due to the nature of Tree Data Structures, evaluating the *Expression Tree* is as simple as recursively running each function in the *Expression Tree* for each *Node*.
+
+A single evaluation will only return the results of each sub-expression in the Expression Tree based on the current set of truth-values used for each of the variables. In order to generate a truth-table, the Evaluator will generate the [*cartesian product*](https://en.wikipedia.org/wiki/Cartesian_product) of all the variables and the possible states (**True** | **False**) then repeatedly evaluate the *Expression Tree* for each row of values. 
+
+In simpler terms, the Evaluator will evaluate the *Expression Tree* for each of all the possible combinations of **True** and **False** values for all the variables.
+
+### Psuedocode
+
+TODO
+
+### Error Handling
+
+**Invalid File.** Upon running the program in `--file` mode, it will first check if the input filepath is valid (e.g. File exists, and File is a `.txt` File).
+
+<img src="./imgs/error_file_not_exists.png" >
+
+<img src="./imgs/error_file_not_txt.png" >
+
+**Invalid Token.** The **Lexer** is a resilient tokenizer and will capture any group of unrecognizable characters as a `Token` of `"invalid"` type until the end of the input instead of terminating early. This allows the **Lexer** to display all the invalid tokens present in the input.
+
+<img src="./imgs/error_lexer.png">
+
+**Invalid Grammar.** The **Parser** while constructing the *Expression Tree* will immediately raise errors upon detecting any incorrect grammar and will inform the user on the expected supposed token in place of the current suspected token. Due to its complexity, the implementation is not resilient and will terminate upon encountering the first invalid grammar.
+
+<img src="./imgs/error_parser.png">
+
+## User Manual
+
+### Usage
 
 Open a terminal on this project's root folder.
 
@@ -27,31 +85,30 @@ If you want to use the compiled binaries, simply run the executable file for you
 cd <this-project-folder>/bin
 
 ./ttg "P & Q" 
-./ttg "P & Q" --inspect
-./ttg input.txt --file
+./ttg "P & Q" --inspect # Displays debug data
+./ttg input.txt --file # Loads input from File
 ./ttg input.txt --file --inspect
 ```
 
 ---
 
-If you want to run it from source, *setup the project first by visiting section* `Running from Source` *for more information*. Afterwards, simply run `python ttg ...`.
-
-```sh
-cd <this-project-folder>
-
-python ttg 
-
-python ttg "P & Q" 
-python ttg "P & Q" --inspect
-python ttg input.txt --file
-python ttg input.txt --file --inspect
-```
+If you want to run it from source, *setup the project first by visiting section* `Running from Source` *for more information*. 
 
 ---
 
-For more usage info, you can run `ttg --help`.
+For more usage info, you can run `./ttg --help`.
 
-## Running from Source
+```sh
+> ./ttg --help
+Usage: ttg [OPTIONS] INPUT
+
+Options:
+  -f, --file     Treats the input as a filepath.
+  -i, --inspect  Display debug data.
+  --help         Show this message and exit.
+```
+
+### Running from Source
 
 **Recommended**: Install `Python 3.8` using a version manager such as `pyenv` from https://github.com/pyenv/pyenv/ (Unix) or https://github.com/pyenv-win/pyenv-win (Windows).
 
@@ -73,18 +130,16 @@ source .venv/bin/Scripts/activate # bash/zsh
 .venv\Scripts\activate.bat # Command Prompt
 .venv\Scripts\Activate.ps1 # Powershell
 
-
-
 pip install -r requirements.txt
 ```
 
 Done! Simply run the project with the following:
 
 ```sh
-python ttg
+python ttg "P & Q"
 ```
 
-## Compiling from Soure
+### Compiling from Source
 
 In order to compile the project into a standalone executable, you will need `pyinstaller` from https://github.com/pyinstaller/pyinstaller (already included in `requirements.txt`). Visit the link for more information.
 
