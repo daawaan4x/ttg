@@ -61,17 +61,17 @@ TODO
 
 **Invalid File.** Upon running the program in `--file` mode, it will first check if the input filepath is valid (e.g. File exists, and File is a `.txt` File).
 
-<img src="./imgs/error_file_not_exists.png" >
+<img width="700" src="./imgs/error_file_not_exists.png" >
 
-<img src="./imgs/error_file_not_txt.png" >
+<img width="460" src="./imgs/error_file_not_txt.png" >
 
 **Invalid Token.** The **Lexer** is a resilient tokenizer and will capture any group of unrecognizable characters as a `Token` of `"invalid"` type until the end of the input instead of terminating early. This allows the **Lexer** to display all the invalid tokens present in the input.
 
-<img src="./imgs/error_lexer.png">
+<img width="540" src="./imgs/error_lexer.png">
 
 **Invalid Grammar.** The **Parser** while constructing the *Expression Tree* will immediately raise errors upon detecting any incorrect grammar and will inform the user on the expected supposed token in place of the current suspected token. Due to its complexity, the implementation is not resilient and will terminate upon encountering the first invalid grammar.
 
-<img src="./imgs/error_parser.png">
+<img width="830" src="./imgs/error_parser.png">
 
 ## User Manual
 
