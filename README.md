@@ -108,6 +108,8 @@ Options:
   --help         Show this message and exit.
 ```
 
+> **WARNING:** Some Terminals have special meanings reserved for some symbols including but not limited to `!`, `$`, or `~`. Running the program in `--inspect` mode will allow you to see the raw input being parsed by Python. In these cases, it is recommended to switch to other Terminals or switch to running the program in `--file` mode.
+
 ### Running from Source
 
 **Recommended**: Install `Python 3.8` using a version manager such as `pyenv` from https://github.com/pyenv/pyenv/ (Unix) or https://github.com/pyenv-win/pyenv-win (Windows).
