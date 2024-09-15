@@ -47,7 +47,7 @@ class Evaluator:
     """Interpreter for the Syntax Tree of a Formula.
 
     A recursive interpreter implementation for traversing the
-    Abstract Syntax Tree (AST) of a propositional logic formula and
+    Expression Tree of a propositional logic formula and
     calculating the individual result of each node at every level.
     """
 

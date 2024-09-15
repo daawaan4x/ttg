@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class Expr:
-    """Represents the individual nodes of the Abstract Syntax Tree (AST)."""
+    """Represents the individual nodes of the Expression Tree."""
 
 
 @dataclass
