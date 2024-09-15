@@ -1,0 +1,19 @@
+[tool.pyright]
+	strict = ["./ttg/"]
+
+[tool.ruff.lint]
+	select = ["ALL"]
+	ignore = [
+		"A002",
+		"FBT001",
+		"FBT002",
+		"D100",
+		"D103", 
+		"D104", 
+		"TRY301", 
+		"TRY002", 
+		"TRY003", 
+		"EM101", 
+		"EM102",
+		"BLE001"
+	]

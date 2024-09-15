@@ -1,11 +1,11 @@
-from rich.text import Text
 from rich.table import Table
+from rich.text import Text
+
 from ttg.core.evaluator import TruthTable
 
 
 def format_bool(value: bool) -> Text:
-    "Formats boolean value for console display"
-
+    """Format boolean value for console display."""
     text = Text(str(value))
     text.stylize("italic")
 
@@ -17,9 +17,8 @@ def format_bool(value: bool) -> Text:
     return text
 
 
-def format(values: TruthTable, title="Truth Table") -> Table:
-    "Formats the truth-table for console display"
-
+def format_truth_table(values: TruthTable, title: str = "Truth Table") -> Table:
+    """Format the truth-table for console display."""
     table = Table(title=title)
 
     # Add formulas of the truth table as columns
@@ -30,8 +29,8 @@ def format(values: TruthTable, title="Truth Table") -> Table:
     # Gather the values of the formulas for each row/index
     row_count = len(values[columns[0]])
     for i in range(row_count):
-        row = map(lambda column: values[column][i], columns)
-        row_str = map(lambda value: format_bool(value), row)
+        row = (values[column][i] for column in columns)
+        row_str = (format_bool(value) for value in row)
         table.add_row(*row_str)
 
     return table
