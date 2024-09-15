@@ -28,4 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/setup
-      - run: pyright -p .
+      - uses: jakebailey/pyright-action@v2
+        with:
+          pylance-version: latest-release
