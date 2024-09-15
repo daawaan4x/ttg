@@ -19,8 +19,10 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 
 ## Table of Contents
 
-1. [Algorithm](#algorithm) 
-   - [Psuedocode](#psuedocode)
+1. [Algorithm](#algorithm)
+   - [Lexer](#lexer)
+   - [Parser](#parser)
+   - [Evaluator](#evaluator)
    - [Error Handling](#error-handling)
 3. [User Manual](#algorithm)
    - [Running From Source](#running-from-source)
@@ -34,9 +36,31 @@ This Truth-Table Generator implements an interpreter divided into three componen
 2. **Parser** for *Expression Tree* construction (constructing `Expr` tree from `List[Token]`)
 3. **Evaluator** for the *Expression Tree* (evaluating `Expr` tree into a `List[bool]`)
 
+### Lexer
+
 The **Lexer** uses *Regex* with [*name-capturing-groups*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group) to iteratively find and classify individual *matches* in the input string which are then converted into a list of *tokens*. This method allows performing the *tokenization* and *classification* phase entirely with *Regex* with minimal business logic (converting *Regex matches* to a custom `Token` class).
 
-The **Parser** is an implementation of a [*Recursive-Descent Parser*](https://en.wikipedia.org/wiki/Recursive_descent_parser) which validates the arrangement of the tokens with the expected grammar and simultaneously constructs an [*Expression Tree*](https://en.wikipedia.org/wiki/Binary_expression_tree) — wherein each *Node* represents its corresponding *token* and its related *Nodes*. It uses the following grammar described in a psuedo-format similar to [*Backus-Naur Form* (**BNF**)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form).
+```
+function tokenize(input_formula):
+  tokens = empty list
+  define regex patterns for each operator and variable
+
+  for each match in input_formula:
+    if match is a "(": add "left_paren" token
+    elif match is a ")": add "right_paren" token
+    elif match is a NOT operator: add "not" token
+    elif match is an AND operator: add "and" token
+    elif match is an OR operator: add "or" token
+    elif match is a THEN operator: add "then" token
+    elif match is a variable: add "variable" token
+    else: add "invalid" token
+
+  return tokens
+```
+
+### Parser
+
+The **Parser** is an implementation of a [*Recursive-Descent Parser*](https://en.wikipedia.org/wiki/Recursive_descent_parser) which validates the arrangement of the tokens with the expected grammar and simultaneously constructs an [*Expression Tree*](https://en.wikipedia.org/wiki/Binary_expression_tree) — wherein each *Node* represents its corresponding *token* and its related *Nodes*. It uses the following grammar described in a psuedo-format similar to [*Backus-Naur Form* (**BNF**)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) and it utilizes the [*Precedence-Climbing Method*](https://en.wikipedia.org/wiki/Operator-precedence_parser) to implement operator precedence.
 
 ```
 expr_primary = ( expr ) | variable
@@ -47,15 +71,92 @@ expr_then = expr_or | expr_or THEN expr_then
 expr = expr_then
 ```
 
+```
+function parse(tokens):
+  current_position = 0
+  return expr()
+
+  function expr():
+    return expr_then()
+
+  function expr_then():
+    left_expr = expr_or()
+    while next token is THEN:
+      right_expr = expr_or()
+      left_expr = new binary_expr(left_expr, "then", right_expr)
+    return left_expr
+
+  function expr_or():
+    left_expr = expr_and()
+    while next token is OR:
+      right_expr = expr_and()
+      left_expr = new binary_expr(left_expr, "or", right_expr)
+    return left_expr
+
+  function expr_and():
+    left_expr = expr_not()
+    while next token is AND:
+      right_expr = expr_not()
+      left_expr = new binary_expr(left_expr, "and", right_expr)
+    return left_expr
+
+  function expr_not():
+    if next token is NOT:
+      return new unary_expr("not", expr_not())
+    return expr_primary()
+
+  function expr_primary():
+    if next token is "(":
+      expression = expr()
+      expect ")"
+      return expression
+    if next token is variable:
+      return new variable_expr(token)
+    throw error("Expected variable or expression")
+```
+
+### Evaluator
+
 The **Evaluator** is simply a set of functions matched to each of the types of *Nodes* in the *Expression Tree*, namely `Variable` nodes, `Unary` nodes, and `Binary` nodes. Due to the nature of Tree Data Structures, evaluating the *Expression Tree* is as simple as recursively running each function in the *Expression Tree* for each *Node*.
 
 A single evaluation will only return the results of each sub-expression in the Expression Tree based on the current set of truth-values used for each of the variables. In order to generate a truth-table, the Evaluator will generate the [*cartesian product*](https://en.wikipedia.org/wiki/Cartesian_product) of all the variables and the possible states (**True** | **False**) then repeatedly evaluate the *Expression Tree* for each row of values. 
 
 In simpler terms, the Evaluator will evaluate the *Expression Tree* for each of all the possible combinations of **True** and **False** values for all the variables.
 
-### Psuedocode
+```
+function generate_truth_combinations(variables):
+  combinations = empty list
+  total_combinations = 2 ^ (count of variables)
+  for each number from 0 to total_combinations - 1:
+    create an empty dictionary called truth_values
+    for each variable and index:
+      value = get (index) bit digit of number at 
+      set value for variable in truth_values dictionary
+    add truth_values to combinations list
+  return combinations
 
-TODO
+function evaluate(expression_tree, truth_values):
+  if expression_tree is a variable:
+    return truth_values[variable]
+  
+  if expression_tree is a unary expression:
+    right_value = evaluate(right_expr, truth_values)
+    if operator is "not":
+      return NOT right_value
+  
+  if expression_tree is a binary expression:
+    left_value = evaluate(left_expr, truth_values)
+    right_value = evaluate(right_expr, truth_values)
+    if operator is "and": return left_value AND right_value
+    if operator is "or": return left_value OR right_value
+    if operator is "then": return (NOT left_value) OR right_value
+
+function generate_truth_table(expression_tree, variables):
+  combinations = generate_truth_combinations(variables)
+  for each combination:
+    evaluate the expression_tree with current truth values
+  return truth table
+```
 
 ### Error Handling
 
@@ -90,6 +191,8 @@ cd <this-project-folder>/bin
 ./ttg input.txt --file --inspect
 ```
 
+> **WARNING:** Some Terminals have special meanings reserved for some symbols including but not limited to `!`, `$`, or `~`. Running the program in `--inspect` mode will allow you to see the raw input being parsed. In these cases, it is recommended to switch to other Terminals or switch to running the program in `--file` mode.
+
 ---
 
 If you want to run it from source, *setup the project first by visiting section* `Running from Source` *for more information*. 
@@ -107,8 +210,6 @@ Options:
   -i, --inspect  Display debug data.
   --help         Show this message and exit.
 ```
-
-> **WARNING:** Some Terminals have special meanings reserved for some symbols including but not limited to `!`, `$`, or `~`. Running the program in `--inspect` mode will allow you to see the raw input being parsed by Python. In these cases, it is recommended to switch to other Terminals or switch to running the program in `--file` mode.
 
 ### Running from Source
 
