@@ -81,6 +81,8 @@ class Evaluator:
             value = left or right
         if expr.operator.type == "then":
             value = (not left) or right
+        if expr.operator.type == "only_if":
+            value = left == right
         self.values[str(expr)] = value  # save result for each expression
         return value
 

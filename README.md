@@ -11,8 +11,9 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 - **Supported Logical Operators**: In order of precedence 
 	- `NOT`, `not`, `!`, `~`, `¬`
 	- `AND`, `and`, `&`, `&&`, `^`, `∧`
-	- `OR`, `or`, `|`, `||`, `v`, `∨`,
-	- `THEN`, `then`, `>`, `->`, `→`,
+	- `OR`, `or`, `|`, `||`, `v`, `∨`
+	- `THEN`, `then`, `IF`, `if`, `>`, `->`, `→`
+	- `ONLY IF`, `only if`, `IFF`, `iff`, `==`, `<>`, `<->`, `↔`
 - **Complex Formulas**: Input nested formulas using parenthesis `(...)` 
 - **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
 - **Input using CLI or File**: Choose either the CLI or a file for input.
@@ -46,13 +47,14 @@ function tokenize(input_formula):
   define regex patterns for each operator and variable
 
   for each match in input_formula:
-    if match is a "(": add "left_paren" token
-    elif match is a ")": add "right_paren" token
-    elif match is a NOT operator: add "not" token
-    elif match is an AND operator: add "and" token
-    elif match is an OR operator: add "or" token
-    elif match is a THEN operator: add "then" token
-    elif match is a variable: add "variable" token
+    if match is "(": add "left_paren" token
+    elif match is ")": add "right_paren" token
+    elif match is NOT: add "not" token
+    elif match is AND: add "and" token
+    elif match is OR: add "or" token
+    elif match is THEN: add "then" token
+    elif match is ONLY IF: add "only_if" token
+    elif match is variable: add "variable" token
     else: add "invalid" token
 
   return tokens
@@ -68,16 +70,23 @@ expr_not = expr_primary | NOT expr_not
 expr_and = expr_not | expr_not AND expr_and
 expr_or = expr_and | expr_and OR expr_or
 expr_then = expr_or | expr_or THEN expr_then
-expr = expr_then
+expr_only_if = expr_then | expr_then ONLY_IF expr_only_if
+expr = expr_only_if
 ```
 
 ```
 function parse(tokens):
-  current_position = 0
   return expr()
 
   function expr():
-    return expr_then()
+    return expr_only_if()
+
+  function expr_only_if():
+    left_expr = expr_then()
+    while next token is ONLY IF:
+      right_expr = expr_then()
+      left_expr = new binary_expr(left_expr, "only_if", right_expr)
+    return left_expr
 
   function expr_then():
     left_expr = expr_or()
@@ -119,9 +128,9 @@ function parse(tokens):
 
 The **Evaluator** is simply a set of functions matched to each of the types of *Nodes* in the *Expression Tree*, namely `Variable` nodes, `Unary` nodes, and `Binary` nodes. Due to the nature of Tree Data Structures, evaluating the *Expression Tree* is as simple as recursively running each function in the *Expression Tree* for each *Node*.
 
-A single evaluation will only return the results of each sub-expression in the Expression Tree based on the current set of truth-values used for each of the variables. In order to generate a truth-table, the Evaluator will generate the [*cartesian product*](https://en.wikipedia.org/wiki/Cartesian_product) of all the variables and the possible states (**True** | **False**) then repeatedly evaluate the *Expression Tree* for each row of values. 
+A single evaluation will only return the results of each sub-expression in the Expression Tree based on the current set of truth-values used for each of the variables. In order to generate a truth-table, the Evaluator will generate the [*cartesian product*](https://en.wikipedia.org/wiki/Cartesian_product) of each of all the variables' possible states (**True** | **False**) then repeatedly evaluate the *Expression Tree* for each row of values. 
 
-In simpler terms, the Evaluator will evaluate the *Expression Tree* for each of all the possible combinations of **True** and **False** values for all the variables.
+In simpler terms, the Evaluator will repeatedly evaluate the *Expression Tree* for each of all the possible combinations of **True** and **False** values for all the variables, in order to construct each row of the truth table.
 
 ```
 function generate_truth_combinations(variables):
@@ -130,7 +139,7 @@ function generate_truth_combinations(variables):
   for each number from 0 to total_combinations - 1:
     create an empty dictionary called truth_values
     for each variable and index:
-      value = get (index) bit digit of number at 
+      value = get (index) bit digit of number
       set value for variable in truth_values dictionary
     add truth_values to combinations list
   return combinations
@@ -150,6 +159,7 @@ function evaluate(expression_tree, truth_values):
     if operator is "and": return left_value AND right_value
     if operator is "or": return left_value OR right_value
     if operator is "then": return (NOT left_value) OR right_value
+    if operator is "only_if": return left_value == right_value
 
 function generate_truth_table(expression_tree, variables):
   combinations = generate_truth_combinations(variables)
@@ -217,7 +227,7 @@ Options:
 
 Alternatively, you can install python packages from https://www.python.org/downloads/.
 
-**Recommended**: After setting up your python installation, install the project's dependencies with the following commands. Visit `venv` docs from https://docs.python.org/3/library/venv.html for more information:
+**Recommended**: After setting up your python installation, install the project's dependencies in a virtual environment. Visit `venv` docs from https://docs.python.org/3/library/venv.html for more information:
 
 ```sh
 cd <this-project-folder>
