@@ -134,12 +134,28 @@ class Parser:
 
         return expr
 
+    def expr_only_if(self):  # noqa: ANN201
+        """Parse a ONLY_IF expression.
+
+        expr_only_if =
+            | expr_then THEN expr_only_if
+            | expr_then
+        """
+        expr = self.expr_then()
+
+        while self.match(["only_if"]):
+            operator = self.prev()
+            right = self.expr_then()
+            expr = BinaryExpr(expr, operator, right)
+
+        return expr
+
     def expr(self):  # noqa: ANN201
         """Parse any expression.
 
-        expr = expr_then.
+        expr = expr_only_if
         """
-        return self.expr_then()
+        return self.expr_only_if()
 
     # endregion
 

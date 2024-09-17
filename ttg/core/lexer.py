@@ -16,8 +16,11 @@ and_regex = r"(?P<and>\bAND\b|&&|&|\^|∧)"
 or_regex = r"(?P<or>\bOR\b|\|\||\||v|∨)"  # noqa: RUF001
 "Regex for OR operators: `OR`, `or`, `|`, `||`, `v`, `∨`"  # noqa: RUF001
 
-then_regex = r"(?P<then>\bTHEN\b|>|->|→)"
-"Regex for THEN operators: `THEN`, `then`, `>`, `->`, `→`"
+then_regex = r"(?P<then>\bTHEN\b|\bIF\b|>|->|→)"
+"Regex for THEN operators: `THEN`, `then`, `IF`, `if`, `>`, `->`, `→`"
+
+only_if_regex = r"(?P<only_if>\bONLY IF\b|\bIFF\b|==|<>|<->|↔)"
+"Regex for ONLY IF operators: `ONLY IF`, `only if`, `IFF`, `iff`, `==`, `<>`, `<->`, `↔`"  # noqa: E501
 
 variable_regex = r"(?P<variable>\b[A-Z]+\b)"
 "Regex for variables - any combination of alphabet characters"
@@ -32,6 +35,7 @@ combined_regex = "|".join(  # noqa: FLY002
         and_regex,
         or_regex,
         then_regex,
+        only_if_regex,
         variable_regex,
         invalid_regex,
     ],
@@ -45,6 +49,7 @@ TokenType = Literal[
     "and",
     "or",
     "then",
+    "only_if",
     "variable",
     "invalid",
 ]
