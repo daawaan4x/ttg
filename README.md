@@ -236,10 +236,10 @@ python -m venv .venv
 
 # --- UNIX ---
 source .venv/bin/activate # bash/zsh
-.venv/Scripts/Activate.ps1 # Powershell
+.venv/bin/Activate.ps1 # Powershell
 
 # --- Windows ---
-source .venv/bin/Scripts/activate # bash/zsh
+source .venv/Scripts/activate # bash/zsh
 .venv\Scripts\activate.bat # Command Prompt
 .venv\Scripts\Activate.ps1 # Powershell
 
