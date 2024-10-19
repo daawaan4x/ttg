@@ -3,7 +3,7 @@
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
 <div align="center">
-	<img width="640" src="./imgs/p_and_q.png" alt="Truth Table Generator">
+	<img width="360" src="./imgs/p_and_q_raw.png" alt="Truth Table Generator">
 </div>
 
 ## Features
@@ -65,7 +65,8 @@ function tokenize(input_formula):
 The **Parser** is an implementation of a [*Recursive-Descent Parser*](https://en.wikipedia.org/wiki/Recursive_descent_parser) which validates the arrangement of the tokens with the expected grammar and simultaneously constructs an [*Expression Tree*](https://en.wikipedia.org/wiki/Binary_expression_tree) — wherein each *Node* represents its corresponding *token* and its related *Nodes*. It uses the following grammar described in a psuedo-format similar to [*Backus-Naur Form* (**BNF**)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) and it utilizes the [*Precedence-Climbing Method*](https://en.wikipedia.org/wiki/Operator-precedence_parser) to implement operator precedence.
 
 ```
-expr_primary = ( expr ) | variable
+expr_group = ( expr )
+expr_primary = expr_group | variable
 expr_not = expr_primary | NOT expr_not
 expr_and = expr_not | expr_not AND expr_and
 expr_or = expr_and | expr_and OR expr_or
@@ -118,7 +119,7 @@ function parse(tokens):
     if next token is "(":
       expression = expr()
       expect ")"
-      return expression
+      return new group_expr(expression)
     if next token is variable:
       return new variable_expr(token)
     throw error("Expected variable or expression")
@@ -139,12 +140,15 @@ function generate_truth_combinations(variables):
   for each number from 0 to total_combinations - 1:
     create an empty dictionary called truth_values
     for each variable and index:
-      value = get (index) bit digit of number
+      value = get (index)'th bit digit of number
       set value for variable in truth_values dictionary
     add truth_values to combinations list
   return combinations
 
 function evaluate(expression_tree, truth_values):
+  if expression_tree is a group expression:
+    return evaluate(expression_tree.child, truth_values)
+
   if expression_tree is a variable:
     return truth_values[variable]
   
@@ -195,10 +199,10 @@ If you want to use the compiled binaries, simply run the executable file for you
 ```sh
 cd <this-project-folder>/bin
 
-./ttg "P & Q" 
+./ttg # Interactive Mode
+./ttg "P & Q" # Immediate Mode
 ./ttg "P & Q" --inspect # Displays debug data
 ./ttg input.txt --file # Loads input from File
-./ttg input.txt --file --inspect
 ```
 
 > **WARNING:** Some Terminals have special meanings reserved for some symbols including but not limited to `!`, `$`, or `~`. Running the program in `--inspect` mode will allow you to see the raw input being parsed. In these cases, it is recommended to switch to other Terminals or switch to running the program in `--file` mode.
@@ -249,7 +253,10 @@ pip install -r requirements.txt
 Done! Simply run the project with the following:
 
 ```sh
-python ttg "P & Q"
+python ttg # Interactive Mode
+python ttg "P & Q" # Immediate Mode
+python ttg "P & Q" --inspect # Displays debug data
+python ttg input.txt --file # Loads input from File
 ```
 
 ### Compiling from Source

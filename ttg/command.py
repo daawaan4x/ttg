@@ -24,6 +24,10 @@ hero = r"""
 def command(input: str, file: bool = False, inspect: bool = False) -> None:
     # If input is a filepath, read formulas from file
     if file:
+        if not input:
+            rich_console.print("Error: No `input` filepath provided", style="bold red")
+            sys.exit(-1)
+
         filepath = Path(input)
 
         try:
