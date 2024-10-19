@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List
 
-from ttg.core.parser import BinaryExpr, Expr, UnaryExpr, VariableExpr
+from ttg.core.parser import BinaryExpr, Expr, GroupExpr, UnaryExpr, VariableExpr
 
 if TYPE_CHECKING:
     from ttg.core.lexer import Token
@@ -36,7 +36,14 @@ def truth_table_variables(variables: list[str]) -> list[TruthValues]:
     for binary in range(2**count):
         # The "not" below is solely for display purposes to generate the `True`
         # values first so that they appear first at the top in the table
-        row = [not bool((binary >> bit) & 1) for bit in range(count)]
+        #
+        # The reverse iteration of "bit" below is also solely for display
+        # purposes to group `True` and `False` together for the first variable
+        #
+        # The original algorithm would be:
+        # [binary >> bit & 1 for bit in range(count)]  # noqa: ERA001
+
+        row = [not binary >> bit & 1 for bit in reversed(range(count))]
         product = dict(zip(variables, row))
         products.append(product)
 
@@ -53,7 +60,10 @@ class Evaluator:
 
     values: TruthValues
 
-    def eval(self, expr: Expr) -> bool:  # noqa: D102
+    def eval(self, expr: Expr) -> bool:
+        """Map each expression's type to its corresponding evaluator function."""
+        if isinstance(expr, GroupExpr):
+            return self.eval(expr.child)
         if isinstance(expr, VariableExpr):
             return self.eval_variable(expr)
         if isinstance(expr, UnaryExpr):
@@ -103,7 +113,8 @@ def evaluate(tokens: list[Token], tree: Expr) -> TruthTable:
     # wrapper function for convenience
 
     # filter & get variable names from list of tokens
-    variables = [x.value for x in filter(lambda x: x.type == "variable", tokens)]
+    variables = list({x.value for x in filter(lambda x: x.type == "variable", tokens)})
+    variables.sort()
 
     table: TruthTable = {}
     evaluator = Evaluator()

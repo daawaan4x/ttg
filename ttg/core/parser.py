@@ -12,6 +12,14 @@ class Expr:
 
 
 @dataclass
+class GroupExpr(Expr):  # noqa: D101
+    child: Expr
+
+    def __str__(self) -> str:  # noqa: D105
+        return f"({self.child})"
+
+
+@dataclass
 class VariableExpr(Expr):  # noqa: D101
     name: Token
 
@@ -25,7 +33,10 @@ class UnaryExpr(Expr):  # noqa: D101
     right: Expr
 
     def __str__(self) -> str:  # noqa: D105
-        return f"{self.operator}({self.right})"
+        space = ""
+        if self.operator.__str__().isalpha():  # in case operator is a word
+            space = " "
+        return f"{self.operator}{space}{self.right}"
 
 
 @dataclass
@@ -35,7 +46,7 @@ class BinaryExpr(Expr):  # noqa: D101
     right: Expr
 
     def __str__(self) -> str:  # noqa: D105
-        return f"({self.left} {self.operator} {self.right})"
+        return f"{self.left} {self.operator} {self.right}"
 
 
 @dataclass
@@ -53,7 +64,7 @@ class Parser:
 
     # region Expressions
 
-    def expr_primary(self) -> Expr | VariableExpr:
+    def expr_primary(self) -> GroupExpr | VariableExpr:
         """Parse primary expression.
 
         expr_primary =
@@ -65,7 +76,7 @@ class Parser:
             if not self.check("right_paren"):
                 raise ParserError("Expected ')'", self.peek())
             self.next()
-            return expr
+            return GroupExpr(expr)
 
         if self.match(["variable"]):
             return VariableExpr(self.prev())
