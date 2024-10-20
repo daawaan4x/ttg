@@ -1,4 +1,4 @@
-# 🟰 Truth Table Generator
+# MMSU-CS134-MP1
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
