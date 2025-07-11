@@ -1,8 +1,8 @@
-# 🟰 `TTG` for *MMSU-CS134-MP1*
+# 🟰 `TTG` for _MMSU-CS134-MP1_
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
-> ... *check the assembly version [ttg-asm](https://github.com/daawaan4x/ttg-asm) written in MIPS* 👀
+> ... _check the [Streamlit App](https://ttg-daawaan4x.streamlit.app/) and the assembly version [ttg-asm](https://github.com/daawaan4x/ttg-asm) written in MIPS_ 👀
 
 <div align="center">
 	<img width="360" src="./imgs/p_and_q_raw.png" alt="Truth Table Generator">
@@ -10,13 +10,13 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 
 ## Features
 
-- **Supported Logical Operators**: In order of precedence 
-	- `NOT`, `not`, `!`, `~`, `¬`
-	- `AND`, `and`, `&`, `&&`, `^`, `∧`
-	- `OR`, `or`, `|`, `||`, `v`, `∨`
-	- `THEN`, `then`, `IF`, `if`, `>`, `->`, `→`
-	- `ONLY IF`, `only if`, `IFF`, `iff`, `==`, `<>`, `<->`, `↔`
-- **Complex Formulas**: Input nested formulas using parenthesis `(...)` 
+- **Supported Logical Operators**: In order of precedence
+  - `NOT`, `not`, `!`, `~`, `¬`
+  - `AND`, `and`, `&`, `&&`, `^`, `∧`
+  - `OR`, `or`, `|`, `||`, `v`, `∨`
+  - `THEN`, `then`, `IF`, `if`, `>`, `->`, `→`
+  - `ONLY IF`, `only if`, `IFF`, `iff`, `==`, `<>`, `<->`, `↔`
+- **Complex Formulas**: Input nested formulas using parenthesis `(...)`
 - **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
 - **Input using CLI or File**: Choose either the CLI or a file for input.
 
@@ -27,7 +27,7 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
    - [Parser](#parser)
    - [Evaluator](#evaluator)
    - [Error Handling](#error-handling)
-3. [User Manual](#algorithm)
+2. [User Manual](#algorithm)
    - [Running From Source](#running-from-source)
    - [Compiling From Source](#compiling-from-source)
 
@@ -35,13 +35,13 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 
 This Truth-Table Generator implements an interpreter divided into three components to handle different phases, namely:
 
-1. **Lexer** for *tokenization* (converting `string` input to `List[Token]`) 
-2. **Parser** for *Expression Tree* construction (constructing `Expr` tree from `List[Token]`)
-3. **Evaluator** for the *Expression Tree* (evaluating `Expr` tree into a `List[bool]`)
+1. **Lexer** for _tokenization_ (converting `string` input to `List[Token]`)
+2. **Parser** for _Expression Tree_ construction (constructing `Expr` tree from `List[Token]`)
+3. **Evaluator** for the _Expression Tree_ (evaluating `Expr` tree into a `List[bool]`)
 
 ### Lexer
 
-The **Lexer** uses *Regex* with [*name-capturing-groups*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group) to iteratively find and classify individual *matches* in the input string which are then converted into a list of *tokens*. This method allows performing the *tokenization* and *classification* phase entirely with *Regex* with minimal business logic (converting *Regex matches* to a custom `Token` class).
+The **Lexer** uses _Regex_ with [_name-capturing-groups_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group) to iteratively find and classify individual _matches_ in the input string which are then converted into a list of _tokens_. This method allows performing the _tokenization_ and _classification_ phase entirely with _Regex_ with minimal business logic (converting _Regex matches_ to a custom `Token` class).
 
 ```
 function tokenize(input_formula):
@@ -64,7 +64,7 @@ function tokenize(input_formula):
 
 ### Parser
 
-The **Parser** is an implementation of a [*Recursive-Descent Parser*](https://en.wikipedia.org/wiki/Recursive_descent_parser) which validates the arrangement of the tokens with the expected grammar and simultaneously constructs an [*Expression Tree*](https://en.wikipedia.org/wiki/Binary_expression_tree) — wherein each *Node* represents its corresponding *token* and its related *Nodes*. It uses the following grammar described in a psuedo-format similar to [*Backus-Naur Form* (**BNF**)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) and it utilizes the [*Precedence-Climbing Method*](https://en.wikipedia.org/wiki/Operator-precedence_parser) to implement operator precedence.
+The **Parser** is an implementation of a [_Recursive-Descent Parser_](https://en.wikipedia.org/wiki/Recursive_descent_parser) which validates the arrangement of the tokens with the expected grammar and simultaneously constructs an [_Expression Tree_](https://en.wikipedia.org/wiki/Binary_expression_tree) — wherein each _Node_ represents its corresponding _token_ and its related _Nodes_. It uses the following grammar described in a psuedo-format similar to [_Backus-Naur Form_ (**BNF**)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) and it utilizes the [_Precedence-Climbing Method_](https://en.wikipedia.org/wiki/Operator-precedence_parser) to implement operator precedence.
 
 ```
 expr_group = ( expr )
@@ -129,11 +129,11 @@ function parse(tokens):
 
 ### Evaluator
 
-The **Evaluator** is simply a set of functions matched to each of the types of *Nodes* in the *Expression Tree*, namely `Variable` nodes, `Unary` nodes, and `Binary` nodes. Due to the nature of Tree Data Structures, evaluating the *Expression Tree* is as simple as recursively running each function in the *Expression Tree* for each *Node*.
+The **Evaluator** is simply a set of functions matched to each of the types of _Nodes_ in the _Expression Tree_, namely `Variable` nodes, `Unary` nodes, and `Binary` nodes. Due to the nature of Tree Data Structures, evaluating the _Expression Tree_ is as simple as recursively running each function in the _Expression Tree_ for each _Node_.
 
-A single evaluation will only return the results of each sub-expression in the Expression Tree based on the current set of truth-values used for each of the variables. In order to generate a truth-table, the Evaluator will generate the [*cartesian product*](https://en.wikipedia.org/wiki/Cartesian_product) of each of all the variables' possible states (**True** | **False**) then repeatedly evaluate the *Expression Tree* for each row of values. 
+A single evaluation will only return the results of each sub-expression in the Expression Tree based on the current set of truth-values used for each of the variables. In order to generate a truth-table, the Evaluator will generate the [_cartesian product_](https://en.wikipedia.org/wiki/Cartesian_product) of each of all the variables' possible states (**True** | **False**) then repeatedly evaluate the _Expression Tree_ for each row of values.
 
-In simpler terms, the Evaluator will repeatedly evaluate the *Expression Tree* for each of all the possible combinations of **True** and **False** values for all the variables, in order to construct each row of the truth table.
+In simpler terms, the Evaluator will repeatedly evaluate the _Expression Tree_ for each of all the possible combinations of **True** and **False** values for all the variables, in order to construct each row of the truth table.
 
 ```
 function generate_truth_combinations(variables):
@@ -153,12 +153,12 @@ function evaluate(expression_tree, truth_values):
 
   if expression_tree is a variable:
     return truth_values[variable]
-  
+
   if expression_tree is a unary expression:
     right_value = evaluate(right_expr, truth_values)
     if operator is "not":
       return NOT right_value
-  
+
   if expression_tree is a binary expression:
     left_value = evaluate(left_expr, truth_values)
     right_value = evaluate(right_expr, truth_values)
@@ -186,7 +186,7 @@ function generate_truth_table(expression_tree, variables):
 
 <img width="540" src="./imgs/error_lexer.png">
 
-**Invalid Grammar.** The **Parser** while constructing the *Expression Tree* will immediately raise errors upon detecting any incorrect grammar and will inform the user on the expected supposed token in place of the current suspected token. Due to its complexity, the implementation is not resilient and will terminate upon encountering the first invalid grammar.
+**Invalid Grammar.** The **Parser** while constructing the _Expression Tree_ will immediately raise errors upon detecting any incorrect grammar and will inform the user on the expected supposed token in place of the current suspected token. Due to its complexity, the implementation is not resilient and will terminate upon encountering the first invalid grammar.
 
 <img width="830" src="./imgs/error_parser.png">
 
@@ -211,7 +211,7 @@ cd <this-project-folder>/bin
 
 ---
 
-If you want to run it from source, *setup the project first by visiting section* `Running from Source` *for more information*. 
+If you want to run it from source, _setup the project first by visiting section_ `Running from Source` _for more information_.
 
 ---
 
