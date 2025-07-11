@@ -39,7 +39,7 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
     - `THEN`, `then`, `IF`, `if`, `>`, `->`, `→`
     - `ONLY IF`, `only if`, `IFF`, `iff`, `==`, `<>`, `<->`, `↔`
 - **Complex Formulas**: Input nested formulas using parenthesis `(...)`
-    - **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
+- **Unlimited Variables**: Add any amount of variables using any combination of alphabet `a-z,A-Z` letters.
     """)  # noqa: E501, RUF001
 
 
