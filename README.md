@@ -1,6 +1,8 @@
-# MMSU-CS134-MP1
+# 🟰 `TTG` for *MMSU-CS134-MP1*
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
+
+> ... *check the assembly version [ttg-asm](https://github.com/daawaan4x/ttg-asm) written in MIPS* 👀
 
 <div align="center">
 	<img width="360" src="./imgs/p_and_q_raw.png" alt="Truth Table Generator">
