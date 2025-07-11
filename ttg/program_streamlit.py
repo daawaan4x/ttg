@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # noqa: PTH100, PTH118, PTH120
+
 import re
 
 import pandas as pd
@@ -13,7 +18,7 @@ from ttg.core.parser import ParserError, parse
 def page() -> None:
     st.markdown("""
 # 🟰 TTG
-> by *Theone Genesis Eclarin* (Github @ [daawaan4x](https://github.com/daawaan4x))
+> by *Theone Genesis Eclarin* (see [github.com/daawaan4x/ttg](https://github.com/daawaan4x/ttg))
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
     """)
