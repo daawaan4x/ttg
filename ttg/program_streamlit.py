@@ -46,7 +46,7 @@ A Truth Table Generator for Propositional Logic Formulas made with Python.
 def program() -> None:
     inspect = st.toggle(label="Inspect Mode")
 
-    formula = st.text_input(label="Formula")
+    formula = st.text_input(label="Input Formula", value="P & Q")
     formula.strip()
 
     if not formula:
