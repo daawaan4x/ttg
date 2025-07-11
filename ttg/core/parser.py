@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ttg.core.lexer import Token, TokenType
@@ -9,6 +9,9 @@ if TYPE_CHECKING:
 
 class Expr:
     """Represents the individual nodes of the Expression Tree."""
+
+    def json(self) -> Any:  # noqa: ANN401, D102
+        pass
 
 
 @dataclass
@@ -18,6 +21,9 @@ class GroupExpr(Expr):  # noqa: D101
     def __str__(self) -> str:  # noqa: D105
         return f"({self.child})"
 
+    def json(self):  # noqa: ANN201, D102
+        return {"child": self.child.json()}
+
 
 @dataclass
 class VariableExpr(Expr):  # noqa: D101
@@ -25,6 +31,9 @@ class VariableExpr(Expr):  # noqa: D101
 
     def __str__(self) -> str:  # noqa: D105
         return str(self.name)
+
+    def json(self):  # noqa: ANN201, D102
+        return {"name": self.name}
 
 
 @dataclass
@@ -38,6 +47,9 @@ class UnaryExpr(Expr):  # noqa: D101
             space = " "
         return f"{self.operator}{space}{self.right}"
 
+    def json(self):  # noqa: ANN201, D102
+        return {"operator": self.operator, "right": self.right.json()}
+
 
 @dataclass
 class BinaryExpr(Expr):  # noqa: D101
@@ -47,6 +59,13 @@ class BinaryExpr(Expr):  # noqa: D101
 
     def __str__(self) -> str:  # noqa: D105
         return f"{self.left} {self.operator} {self.right}"
+
+    def json(self):  # noqa: ANN201, D102
+        return {
+            "left": self.left.json(),
+            "operator": self.operator,
+            "right": self.right.json(),
+        }
 
 
 @dataclass
