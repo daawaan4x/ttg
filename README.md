@@ -227,6 +227,14 @@ Options:
   --help         Show this message and exit.
 ```
 
+## Streamlit
+
+For online presentations, the project uses streamlit.
+
+```sh
+streamlit run ttg/program_streamlit.py
+```
+
 ### Running from Source
 
 **Recommended**: Install `Python 3.8` using a version manager such as `pyenv` from https://github.com/pyenv/pyenv/ (Unix) or https://github.com/pyenv-win/pyenv-win (Windows).
