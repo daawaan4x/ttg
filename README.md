@@ -2,7 +2,7 @@
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
 
-> ... _check the [Streamlit App](https://ttg-daawaan4x.streamlit.app/) and the assembly version [ttg-asm](https://github.com/daawaan4x/ttg-asm) written in MIPS_ 👀
+> ... _check the [Streamlit App](https://ttg.theoneeclarin.com/) and the assembly version [ttg-asm](https://github.com/daawaan4x/ttg-asm) written in MIPS_ 👀
 
 <div align="center">
 	<img width="360" src="./imgs/p_and_q_raw.png" alt="Truth Table Generator">
