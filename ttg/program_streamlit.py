@@ -16,12 +16,22 @@ from ttg.core.parser import ParserError, parse
 
 
 def page() -> None:
-    st.markdown("""
+    st.markdown(
+        """
 # 🟰 TTG
-> by *Theone Genesis Eclarin* (see [github.com/daawaan4x/ttg](https://github.com/daawaan4x/ttg))
+> by *Theone Genesis Eclarin* &nbsp;
+    <a href="https://github.com/daawaan4x">
+        <img
+            style="border-color: hsl(240 5.9% 90%); border-width: 1px; border-radius: 0.25rem; border-style: solid"
+            src="https://img.shields.io/badge/@daawaan4x-white?logo=github&logoColor=121013"
+            alt="Github"
+        />
+    </a>
 
 A Truth Table Generator for Propositional Logic Formulas made with Python.
-    """)
+    """,
+        unsafe_allow_html=True,
+    )
 
     try:
         program()
